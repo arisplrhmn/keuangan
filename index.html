@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CatatUangKu - Keuangan Pribadi</title>
+  <title>Kantong Pribadi - Keuangan</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Google Fonts: Inter -->
@@ -50,7 +50,7 @@
 
   <!-- TOP HEADER -->
   <header class="flex justify-between items-center px-5 pt-5 pb-3 border-b border-emerald-950/40">
-    <h1 class="text-2xl font-bold tracking-tight text-white">CatatUangKu</h1>
+    <h1 class="text-2xl font-bold tracking-tight text-white">Kantong Pribadi</h1>
     <button onclick="openSettingsModal()" class="p-2 rounded-full hover:bg-emerald-950/40 text-gray-300">
       <i data-lucide="settings" class="w-6 h-6"></i>
     </button>
@@ -115,10 +115,10 @@
         </div>
       </div>
 
-      <!-- DOMPET & REKENING SECTION -->
+      <!-- KANTONG SECTION -->
       <div>
         <div class="flex justify-between items-center mb-3">
-          <h2 class="text-base font-bold text-white">Dompet & Rekening</h2>
+          <h2 class="text-base font-bold text-white">Kantong</h2>
           <button onclick="openManageWalletsModal()" class="text-xs text-emerald-500 hover:underline font-medium">Kelola</button>
         </div>
 
@@ -214,7 +214,7 @@
       </div>
 
       <div class="mb-4">
-        <label class="text-xs text-gray-400 mb-2 block font-medium">Dompet / Rekening</label>
+        <label class="text-xs text-gray-400 mb-2 block font-medium">Pilih Kantong</label>
         <select id="inputWallet" class="w-full bg-[#1d2b24] border border-emerald-900/40 rounded-xl p-3 text-xs text-white focus:outline-none"></select>
       </div>
 
@@ -229,11 +229,11 @@
     </div>
   </div>
 
-  <!-- MODAL: KELOLA DOMPET (DAFTAR, EDIT, HAPUS) -->
+  <!-- MODAL: KELOLA KANTONG -->
   <div id="manageWalletsModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex flex-col justify-end hidden">
     <div class="bg-[#141d18] w-full max-w-md mx-auto rounded-t-3xl p-5 border-t border-emerald-800/40 max-h-[85vh] overflow-y-auto">
       <div class="flex justify-between items-center mb-4">
-        <h3 class="text-lg font-bold text-white">Kelola Dompet & Rekening</h3>
+        <h3 class="text-lg font-bold text-white">Kelola Kantong</h3>
         <button onclick="closeManageWalletsModal()" class="text-gray-400 hover:text-white">
           <i data-lucide="x" class="w-6 h-6"></i>
         </button>
@@ -242,16 +242,16 @@
       <div class="space-y-3 mb-4" id="walletsManageList"></div>
 
       <button onclick="openWalletFormModal()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl shadow-lg flex items-center justify-center gap-2 text-xs">
-        <i data-lucide="plus" class="w-4 h-4"></i> Tambah Dompet Baru
+        <i data-lucide="plus" class="w-4 h-4"></i> Tambah Kantong Baru
       </button>
     </div>
   </div>
 
-  <!-- MODAL: FORM DOMPET (TAMBAH / EDIT) -->
+  <!-- MODAL: FORM KANTONG (TAMBAH / EDIT KANTONG & EDIT SALDO) -->
   <div id="walletFormModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex flex-col justify-end hidden">
     <div class="bg-[#141d18] w-full max-w-md mx-auto rounded-t-3xl p-5 border-t border-emerald-800/40">
       <div class="flex justify-between items-center mb-4">
-        <h3 id="walletFormTitle" class="text-lg font-bold text-white">Tambah Dompet / Rekening</h3>
+        <h3 id="walletFormTitle" class="text-lg font-bold text-white">Tambah Kantong</h3>
         <button onclick="closeWalletFormModal()" class="text-gray-400 hover:text-white">
           <i data-lucide="x" class="w-6 h-6"></i>
         </button>
@@ -261,8 +261,13 @@
 
       <div class="space-y-3">
         <div>
-          <label class="text-xs text-gray-400 mb-1 block">Nama Bank / E-Wallet</label>
-          <input type="text" id="walletFormName" placeholder="misal: BCA, SeaBank, GoPay, DANA" class="w-full bg-[#1d2b24] border border-emerald-900/40 rounded-xl p-3 text-xs text-white focus:outline-none">
+          <label class="text-xs text-gray-400 mb-1 block">Nama Kantong / Bank / E-Wallet</label>
+          <input type="text" id="walletFormName" placeholder="misal: BCA, SeaBank, GoPay, Cash" class="w-full bg-[#1d2b24] border border-emerald-900/40 rounded-xl p-3 text-xs text-white focus:outline-none">
+        </div>
+
+        <div>
+          <label class="text-xs text-gray-400 mb-1 block">Saldo Kantong (Rp)</label>
+          <input type="number" id="walletFormInitialBalance" placeholder="0" class="w-full bg-[#1d2b24] border border-emerald-900/40 rounded-xl p-3 text-xs text-emerald-400 font-bold focus:outline-none">
         </div>
 
         <div>
@@ -297,13 +302,13 @@
         </div>
 
         <button onclick="saveWalletForm()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl shadow-lg mt-4">
-          Simpan Dompet
+          Simpan Kantong
         </button>
       </div>
     </div>
   </div>
 
-  <!-- MODAL: KELOLA KATEGORI TRANSAKSI (SESUAI FOTO 2) -->
+  <!-- MODAL: KELOLA KATEGORI TRANSAKSI -->
   <div id="manageCategoriesModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex flex-col justify-end hidden">
     <div class="bg-[#141d18] w-full max-w-md mx-auto rounded-t-3xl p-5 border-t border-emerald-800/40 h-[90vh] flex flex-col">
       <div class="flex justify-between items-center mb-4">
@@ -315,15 +320,12 @@
         </div>
       </div>
 
-      <!-- Category Type Tabs -->
       <div class="flex border-b border-emerald-900/40 mb-4">
         <button id="catTabOut" onclick="setManageCatTab('out')" class="flex-1 pb-2 text-center text-xs font-bold text-emerald-400 border-b-2 border-emerald-500">Pengeluaran</button>
         <button id="catTabIn" onclick="setManageCatTab('in')" class="flex-1 pb-2 text-center text-xs font-bold text-gray-400 hover:text-white">Pemasukan</button>
       </div>
 
-      <div class="flex-1 overflow-y-auto space-y-3 no-scrollbar" id="categoriesManageList">
-        <!-- Rendered dynamically matching photo 2 -->
-      </div>
+      <div class="flex-1 overflow-y-auto space-y-3 no-scrollbar" id="categoriesManageList"></div>
 
       <button onclick="openCategoryFormModal()" class="fixed bottom-6 right-8 bg-emerald-600 hover:bg-emerald-500 text-white p-3.5 rounded-2xl shadow-xl flex items-center justify-center">
         <i data-lucide="plus" class="w-6 h-6"></i>
@@ -331,7 +333,7 @@
     </div>
   </div>
 
-  <!-- MODAL: FORM TAMBAH / EDIT KATEGORI (PRESISI FOTO 1 & 3) -->
+  <!-- MODAL: FORM TAMBAH / EDIT KATEGORI -->
   <div id="categoryFormModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex flex-col justify-end hidden">
     <div class="bg-[#141d18] w-full max-w-md mx-auto rounded-t-3xl p-5 border-t border-emerald-800/40 h-[92vh] overflow-y-auto">
       <div class="flex justify-between items-center mb-2">
@@ -344,7 +346,6 @@
 
       <input type="hidden" id="editingCatId" value="">
 
-      <!-- Preview Icon -->
       <div class="flex flex-col items-center justify-center my-4">
         <div id="catPreviewIconBg" class="w-20 h-20 rounded-full bg-rose-900/40 border-2 border-rose-500 flex items-center justify-center text-rose-500 mb-2">
           <i id="catPreviewIcon" data-lucide="utensils" class="w-10 h-10"></i>
@@ -352,7 +353,6 @@
         <span id="catPreviewLabel" class="text-sm font-bold text-rose-500">Nama Kategori</span>
       </div>
 
-      <!-- Tipe Kategori Switcher -->
       <div class="mb-4">
         <label class="text-xs text-gray-400 mb-2 block font-medium">Tipe Kategori</label>
         <div class="grid grid-cols-2 gap-3">
@@ -361,7 +361,6 @@
         </div>
       </div>
 
-      <!-- Nama Kategori Input -->
       <div class="mb-4">
         <label class="text-xs text-gray-400 mb-1 block font-medium">Nama Kategori</label>
         <div class="relative">
@@ -370,20 +369,14 @@
         </div>
       </div>
 
-      <!-- Color Palette Selection (Pilih Warna) -->
       <div class="mb-4">
         <label class="text-xs text-gray-400 mb-2 block font-medium">Pilih Warna</label>
-        <div class="grid grid-cols-6 gap-3" id="catColorGrid">
-          <!-- Rendered dynamically -->
-        </div>
+        <div class="grid grid-cols-6 gap-3" id="catColorGrid"></div>
       </div>
 
-      <!-- Icon Palette Selection (Pilih Ikon) -->
       <div class="mb-6">
         <label class="text-xs text-gray-400 mb-2 block font-medium">Pilih Ikon</label>
-        <div class="grid grid-cols-5 gap-2 max-h-48 overflow-y-auto no-scrollbar p-1" id="catIconGrid">
-          <!-- Rendered dynamically -->
-        </div>
+        <div class="grid grid-cols-5 gap-2 max-h-48 overflow-y-auto no-scrollbar p-1" id="catIconGrid"></div>
       </div>
 
       <button onclick="saveCategoryForm()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl shadow-lg">
@@ -403,10 +396,9 @@
       </div>
 
       <div class="space-y-4">
-        <!-- EXPORT -->
         <div class="bg-[#18221c] p-4 rounded-2xl border border-emerald-900/30">
           <h4 class="text-xs font-bold text-white mb-1">Export Data (projects.json)</h4>
-          <p class="text-[11px] text-gray-400 mb-3">Unduh seluruh catatan transaksi dan daftar dompet ke file JSON di HP Anda.</p>
+          <p class="text-[11px] text-gray-400 mb-3">Unduh seluruh catatan transaksi dan data kantong ke file JSON di HP Anda.</p>
           <div class="flex flex-col gap-2">
             <button onclick="exportProjectsJson()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2">
               <i data-lucide="download" class="w-4 h-4"></i> Download projects.json
@@ -417,7 +409,6 @@
           </div>
         </div>
 
-        <!-- IMPORT -->
         <div class="bg-[#18221c] p-4 rounded-2xl border border-emerald-900/30">
           <h4 class="text-xs font-bold text-white mb-1">Import Data (projects.json)</h4>
           <p class="text-[11px] text-gray-400 mb-3">Pilih dan masukkan file projects.json dari HP untuk memulihkan data.</p>
@@ -427,7 +418,6 @@
           </button>
         </div>
 
-        <!-- CLEAR ALL -->
         <button onclick="clearAllData()" class="w-full bg-rose-900/40 hover:bg-rose-800/60 border border-rose-800/40 text-rose-300 font-bold py-2.5 rounded-xl text-xs">
           Kosongkan Semua Data
         </button>
@@ -436,7 +426,6 @@
   </div>
 
   <script>
-    // ICON PALETTE FOR CATEGORY
     const ICON_LIST = [
       'utensils', 'coffee', 'car', 'bus', 'train', 'plane', 'shopping-bag', 'shirt',
       'file-text', 'credit-card', 'gamepad-2', 'music', 'tv', 'film', 'pill', 'heart',
@@ -446,7 +435,6 @@
       'arrow-up-right', 'arrow-down-left', 'wallet', 'building-2', 'store'
     ];
 
-    // COLOR PALETTE FOR CATEGORY (PHOTO 1)
     const COLOR_LIST = [
       '#ef4444', '#f87171', '#ec4899', '#f472b6', '#a855f7', '#c084fc',
       '#6366f1', '#818cf8', '#3b82f6', '#60a5fa', '#06b6d4', '#38bdf8',
@@ -454,27 +442,29 @@
       '#eab308', '#facc15', '#f97316', '#fb923c', '#f43f5e', '#fb7185'
     ];
 
-    // INITIALIZATION STATE
     let wallets = JSON.parse(localStorage.getItem('catat_uang_wallets')) || [
-      { id: 'bca', name: 'BCA', category: 'Bank Umum', icon: 'building-2', color: 'bg-blue-600' },
-      { id: 'seabank', name: 'SeaBank', category: 'Bank Digital', icon: 'landmark', color: 'bg-orange-600' },
-      { id: 'jago', name: 'Bank Jago', category: 'Bank Digital', icon: 'landmark', color: 'bg-amber-500' },
-      { id: 'cash', name: 'Cash', category: 'Tunai', icon: 'wallet', color: 'bg-blue-600' }
+      { id: 'bca', name: 'BCA', initialBalance: 0, category: 'Bank Umum', icon: 'building-2', color: 'bg-blue-600' },
+      { id: 'seabank', name: 'SeaBank', initialBalance: 0, category: 'Bank Digital', icon: 'landmark', color: 'bg-orange-600' },
+      { id: 'jago', name: 'Bank Jago', initialBalance: 0, category: 'Bank Digital', icon: 'landmark', color: 'bg-amber-500' },
+      { id: 'gopay', name: 'GoPay', initialBalance: 0, category: 'E-Wallet', icon: 'smartphone', color: 'bg-sky-500' },
+      { id: 'dana', name: 'DANA', initialBalance: 0, category: 'E-Wallet', icon: 'smartphone', color: 'bg-blue-500' },
+      { id: 'shopeepay', name: 'ShopeePay', initialBalance: 0, category: 'E-Wallet', icon: 'smartphone', color: 'bg-orange-500' },
+      { id: 'cash', name: 'Cash', initialBalance: 0, category: 'Tunai', icon: 'wallet', color: 'bg-blue-600' }
     ];
 
     let categoriesOut = JSON.parse(localStorage.getItem('catat_uang_cat_out')) || [
-      { id: 'makan', label: 'Makan dan Minum', icon: 'utensils', color: '#eab308', isDefault: true },
-      { id: 'transpor', label: 'Transportasi', icon: 'car', color: '#06b6d4', isDefault: true },
-      { id: 'belanja', label: 'Belanja', icon: 'shopping-bag', color: '#a855f7', isDefault: true },
-      { id: 'tagihan', label: 'Tagihan', icon: 'file-text', color: '#f87171', isDefault: true },
-      { id: 'kesehatan', label: 'Kesehatan', icon: 'pill', color: '#10b981', isDefault: true },
-      { id: 'pendidikan', label: 'Pendidikan', icon: 'book-open', color: '#f59e0b', isDefault: true }
+      { id: 'makan', label: 'Makan dan Minum', icon: 'utensils', color: '#eab308' },
+      { id: 'transpor', label: 'Transportasi', icon: 'car', color: '#06b6d4' },
+      { id: 'belanja', label: 'Belanja', icon: 'shopping-bag', color: '#a855f7' },
+      { id: 'tagihan', label: 'Tagihan', icon: 'file-text', color: '#f87171' },
+      { id: 'kesehatan', label: 'Kesehatan', icon: 'pill', color: '#10b981' },
+      { id: 'pendidikan', label: 'Pendidikan', icon: 'book-open', color: '#f59e0b' }
     ];
 
     let categoriesIn = JSON.parse(localStorage.getItem('catat_uang_cat_in')) || [
-      { id: 'gaji', label: 'Gaji', icon: 'coins', color: '#10b981', isDefault: true },
-      { id: 'transfer', label: 'Transfer / Mamah', icon: 'heart', color: '#ec4899', isDefault: true },
-      { id: 'bonus', label: 'Bonus / Gift', icon: 'gift', color: '#3b82f6', isDefault: true }
+      { id: 'gaji', label: 'Gaji', icon: 'coins', color: '#10b981' },
+      { id: 'transfer', label: 'Transfer / Mamah', icon: 'heart', color: '#ec4899' },
+      { id: 'bonus', label: 'Bonus / Gift', icon: 'gift', color: '#3b82f6' }
     ];
 
     let transactions = JSON.parse(localStorage.getItem('catat_uang_tx')) || [];
@@ -485,7 +475,6 @@
     let activeFilterType = 'all';
     let selectedWalletFilter = 'all';
 
-    // State for Category Form Modal
     let catFormSelectedIcon = 'utensils';
     let catFormSelectedColor = '#ef4444';
     let catFormType = 'out';
@@ -523,7 +512,9 @@
       let totalOut = 0;
 
       const walletBalances = {};
-      wallets.forEach(w => walletBalances[w.id] = 0);
+      wallets.forEach(w => {
+        walletBalances[w.id] = Number(w.initialBalance || 0);
+      });
 
       transactions.forEach(tx => {
         if (tx.type === 'in') {
@@ -535,7 +526,8 @@
         }
       });
 
-      const grandTotal = totalIn - totalOut;
+      let grandTotal = 0;
+      Object.values(walletBalances).forEach(b => grandTotal += b);
 
       document.getElementById('totalBalanceText').innerText = isBalanceHidden ? 'Rp ••••••••' : formatRupiah(grandTotal);
       document.getElementById('totalIncomeText').innerText = isBalanceHidden ? 'Rp •••' : formatRupiah(totalIn);
@@ -656,7 +648,6 @@
       lucide.createIcons();
     }
 
-    // MODAL CONTROL & TRANSACTION CREATION/EDITING
     function openAddModal() {
       document.getElementById('editingTxId').value = '';
       document.getElementById('txModalTitle').innerText = 'Tambah Transaksi';
@@ -760,12 +751,11 @@
       }
 
       if (!walletId) {
-        alert('Mohon pilih dompet/rekening.');
+        alert('Mohon pilih kantong terlebih dahulu.');
         return;
       }
 
       if (editingId) {
-        // Update existing
         const index = transactions.findIndex(t => t.id == editingId);
         if (index !== -1) {
           transactions[index] = {
@@ -779,7 +769,6 @@
           };
         }
       } else {
-        // Create new
         const newTx = {
           id: Date.now(),
           type: selectedTxType,
@@ -797,7 +786,6 @@
       closeModal();
     }
 
-    // MANAGE WALLETS MODAL & EDIT/DELETE
     function openManageWalletsModal() {
       renderWalletsManageList();
       document.getElementById('manageWalletsModal').classList.remove('hidden');
@@ -812,14 +800,14 @@
       let html = '';
       wallets.forEach(w => {
         html += `
-          <div class="bg-[#18221c] p-3 rounded-xl border border-emerald-900/30 flex items-center justify-between">
+          <div class="bg-[#18221c] p-3.5 rounded-xl border border-emerald-900/30 flex items-center justify-between">
             <div class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded-full ${w.color} flex items-center justify-center text-white">
-                <i data-lucide="${w.icon}" class="w-4 h-4"></i>
+              <div class="w-9 h-9 rounded-full ${w.color} flex items-center justify-center text-white">
+                <i data-lucide="${w.icon}" class="w-4.5 h-4.5"></i>
               </div>
               <div>
                 <p class="text-xs font-bold text-white">${w.name}</p>
-                <p class="text-[10px] text-gray-400">${w.category}</p>
+                <p class="text-[10px] text-emerald-400 font-semibold">Saldo: ${formatRupiah(w.initialBalance || 0)}</p>
               </div>
             </div>
             <div class="flex gap-2">
@@ -838,15 +826,17 @@
         const w = wallets.find(item => item.id === walletId);
         if (!w) return;
         document.getElementById('editingWalletId').value = w.id;
-        document.getElementById('walletFormTitle').innerText = 'Edit Dompet / Rekening';
+        document.getElementById('walletFormTitle').innerText = 'Edit Kantong';
         document.getElementById('walletFormName').value = w.name;
+        document.getElementById('walletFormInitialBalance').value = w.initialBalance || 0;
         document.getElementById('walletFormCategory').value = w.category;
         document.getElementById('walletFormIcon').value = w.icon;
         document.getElementById('walletFormColor').value = w.color;
       } else {
         document.getElementById('editingWalletId').value = '';
-        document.getElementById('walletFormTitle').innerText = 'Tambah Dompet / Rekening';
+        document.getElementById('walletFormTitle').innerText = 'Tambah Kantong';
         document.getElementById('walletFormName').value = '';
+        document.getElementById('walletFormInitialBalance').value = '0';
       }
       document.getElementById('walletFormModal').classList.remove('hidden');
     }
@@ -858,22 +848,23 @@
     function saveWalletForm() {
       const editingId = document.getElementById('editingWalletId').value;
       const name = document.getElementById('walletFormName').value.trim();
+      const initialBalance = parseFloat(document.getElementById('walletFormInitialBalance').value) || 0;
       const category = document.getElementById('walletFormCategory').value;
       const icon = document.getElementById('walletFormIcon').value;
       const color = document.getElementById('walletFormColor').value;
 
       if (!name) {
-        alert('Masukkan nama bank / e-wallet.');
+        alert('Masukkan nama kantong.');
         return;
       }
 
       if (editingId) {
         const idx = wallets.findIndex(w => w.id === editingId);
         if (idx !== -1) {
-          wallets[idx] = { id: editingId, name, category, icon, color };
+          wallets[idx] = { id: editingId, name, initialBalance, category, icon, color };
         }
       } else {
-        wallets.push({ id: 'w_' + Date.now(), name, category, icon, color });
+        wallets.push({ id: 'w_' + Date.now(), name, initialBalance, category, icon, color });
       }
 
       populateWalletOptions();
@@ -883,7 +874,7 @@
     }
 
     function deleteWallet(walletId) {
-      if (confirm('Menghapus dompet juga akan menghapus transaksi terkait. Lanjutkan?')) {
+      if (confirm('Menghapus kantong juga akan menghapus transaksi terkait. Lanjutkan?')) {
         wallets = wallets.filter(w => w.id !== walletId);
         transactions = transactions.filter(t => t.walletId !== walletId);
         populateWalletOptions();
@@ -893,7 +884,6 @@
       }
     }
 
-    // MANAGE CATEGORIES & FORM (PRESISI FOTO 1, 2, 3)
     function openManageCategoriesModal() {
       setManageCatTab('out');
       document.getElementById('manageCategoriesModal').classList.remove('hidden');
@@ -1082,7 +1072,6 @@
       }
     }
 
-    // SETTINGS & EXPORT/IMPORT JSON
     function openSettingsModal() {
       document.getElementById('settingsModal').classList.remove('hidden');
     }
@@ -1093,7 +1082,7 @@
 
     function getProjectPayload() {
       return {
-        appName: 'CatatUangKu',
+        appName: 'KantongPribadi',
         exportDate: new Date().toISOString(),
         wallets: wallets,
         categoriesOut: categoriesOut,
@@ -1167,9 +1156,9 @@
     }
 
     function clearAllData() {
-      if (confirm('Apakah Anda yakin ingin mengosongkan semua data transaksi dan dompet?')) {
+      if (confirm('Apakah Anda yakin ingin mengosongkan semua data transaksi dan kantong?')) {
         transactions = [];
-        wallets = [{ id: 'cash', name: 'Cash', category: 'Tunai', icon: 'wallet', color: 'bg-blue-600' }];
+        wallets = [{ id: 'cash', name: 'Cash', initialBalance: 0, category: 'Tunai', icon: 'wallet', color: 'bg-blue-600' }];
         populateWalletOptions();
         updateCalculatedBalances();
         renderTransactions();
@@ -1177,7 +1166,6 @@
       }
     }
 
-    // HELPERS
     function toggleHideBalance() {
       isBalanceHidden = !isBalanceHidden;
       document.getElementById('eyeIcon').setAttribute('data-lucide', isBalanceHidden ? 'eye-off' : 'eye');
