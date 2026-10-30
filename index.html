@@ -61,7 +61,11 @@
     <button onclick="changeMonth(-1)" class="p-1 text-gray-400 hover:text-white">
       <i data-lucide="chevron-left" class="w-5 h-5"></i>
     </button>
-    <span id="currentMonthText" class="text-base font-semibold tracking-wide">Oktober 2026</span>
+    <!-- CLICKABLE MONTH TEXT FOR POPUP PICKER -->
+    <button onclick="openMonthPickerModal()" class="flex items-center gap-1.5 px-3 py-1 rounded-xl hover:bg-[#18221c] transition-colors">
+      <span id="currentMonthText" class="text-base font-semibold tracking-wide text-white">Oktober 2026</span>
+      <i data-lucide="chevron-down" class="w-4 h-4 text-emerald-400"></i>
+    </button>
     <button onclick="changeMonth(1)" class="p-1 text-gray-400 hover:text-white">
       <i data-lucide="chevron-right" class="w-5 h-5"></i>
     </button>
@@ -169,6 +173,37 @@
     </button>
   </nav>
 
+  <!-- MODAL: PICKER BULAN & TAHUN (SAMA SEPERTI FOTO 1) -->
+  <div id="monthPickerModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-[#18221c] w-full max-w-xs rounded-3xl p-5 border border-emerald-900/40 shadow-2xl">
+      <!-- Header Tahun -->
+      <div class="flex justify-between items-center mb-5 px-2">
+        <button onclick="changePickerYear(-1)" class="p-1 text-gray-400 hover:text-white">
+          <i data-lucide="chevron-left" class="w-5 h-5"></i>
+        </button>
+        <span id="pickerYearText" class="text-lg font-bold text-white tracking-wider">2026</span>
+        <button onclick="changePickerYear(1)" class="p-1 text-gray-400 hover:text-white">
+          <i data-lucide="chevron-right" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Grid Bulan -->
+      <div class="grid grid-cols-3 gap-2.5 mb-6" id="monthGrid">
+        <!-- Dynamic month buttons -->
+      </div>
+
+      <!-- Actions -->
+      <div class="grid grid-cols-2 gap-3">
+        <button onclick="closeMonthPickerModal()" class="py-2.5 rounded-xl bg-[#233027] text-gray-300 font-semibold text-xs border border-emerald-900/30">
+          Batal
+        </button>
+        <button onclick="applyMonthPicker()" class="py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs shadow-lg">
+          Pilih
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL: TAMBAH / EDIT TRANSAKSI -->
   <div id="transactionModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex flex-col justify-end hidden">
     <div class="bg-[#141d18] w-full max-w-md mx-auto rounded-t-3xl p-5 border-t border-emerald-800/40 max-h-[90vh] overflow-y-auto">
@@ -218,9 +253,14 @@
         <select id="inputWallet" class="w-full bg-[#1d2b24] border border-emerald-900/40 rounded-xl p-3 text-xs text-white focus:outline-none"></select>
       </div>
 
+      <!-- TANGGAL TRANSAKSI BERSAMA DISPLAY KETERANGAN DESKRIPTIF -->
       <div class="mb-4">
-        <label class="text-xs text-gray-400 mb-1 block font-medium">Tanggal</label>
-        <input type="date" id="inputDate" class="w-full bg-[#1d2b24] border border-emerald-900/40 rounded-xl p-3 text-xs text-white focus:outline-none">
+        <label class="text-xs text-gray-400 mb-1 block font-medium">Tanggal Transaksi</label>
+        <div class="bg-[#1d2b24] border border-emerald-900/40 rounded-xl p-3 flex items-center gap-3">
+          <i data-lucide="calendar" class="w-5 h-5 text-emerald-400"></i>
+          <input type="date" id="inputDate" onchange="updateFormattedDateDisplay()" class="bg-transparent text-xs text-white focus:outline-none flex-1">
+        </div>
+        <p id="formattedDateText" class="text-[11px] text-emerald-400/90 font-medium mt-1.5 pl-1"></p>
       </div>
 
       <button onclick="saveTransaction()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl shadow-lg mt-2">
@@ -247,7 +287,7 @@
     </div>
   </div>
 
-  <!-- MODAL: FORM KANTONG (TAMBAH / EDIT KANTONG & EDIT SALDO) -->
+  <!-- MODAL: FORM KANTONG -->
   <div id="walletFormModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex flex-col justify-end hidden">
     <div class="bg-[#141d18] w-full max-w-md mx-auto rounded-t-3xl p-5 border-t border-emerald-800/40">
       <div class="flex justify-between items-center mb-4">
@@ -426,6 +466,13 @@
   </div>
 
   <script>
+    const MONTH_NAMES = [
+      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    ];
+
+    const MONTH_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'];
+
     const ICON_LIST = [
       'utensils', 'coffee', 'car', 'bus', 'train', 'plane', 'shopping-bag', 'shirt',
       'file-text', 'credit-card', 'gamepad-2', 'music', 'tv', 'film', 'pill', 'heart',
@@ -441,6 +488,14 @@
       '#0d9488', '#2dd4bf', '#10b981', '#34d399', '#84cc16', '#a3e635',
       '#eab308', '#facc15', '#f97316', '#fb923c', '#f43f5e', '#fb7185'
     ];
+
+    // CURRENT FILTERED PERIOD
+    let currentSelectedMonth = 9; // 0-based: 9 = Oktober
+    let currentSelectedYear = 2026;
+
+    // MONTH PICKER TEMP STATE
+    let pickerTempMonth = 9;
+    let pickerTempYear = 2026;
 
     let wallets = JSON.parse(localStorage.getItem('catat_uang_wallets')) || [
       { id: 'bca', name: 'BCA', initialBalance: 0, category: 'Bank Umum', icon: 'building-2', color: 'bg-blue-600' },
@@ -482,11 +537,78 @@
 
     window.onload = function() {
       document.getElementById('inputDate').value = new Date().toISOString().split('T')[0];
+      updateFormattedDateDisplay();
       populateWalletOptions();
+      updateHeaderMonthDisplay();
       updateCalculatedBalances();
       renderTransactions();
       lucide.createIcons();
     };
+
+    function updateHeaderMonthDisplay() {
+      document.getElementById('currentMonthText').innerText = `${MONTH_NAMES[currentSelectedMonth]} ${currentSelectedYear}`;
+    }
+
+    // MONTH PICKER MODAL LOGIC (SEPERTI DALAM FOTO 1)
+    function openMonthPickerModal() {
+      pickerTempMonth = currentSelectedMonth;
+      pickerTempYear = currentSelectedYear;
+      renderMonthPickerGrid();
+      document.getElementById('pickerYearText').innerText = pickerTempYear;
+      document.getElementById('monthPickerModal').classList.remove('hidden');
+    }
+
+    function closeMonthPickerModal() {
+      document.getElementById('monthPickerModal').classList.add('hidden');
+    }
+
+    function changePickerYear(delta) {
+      pickerTempYear += delta;
+      document.getElementById('pickerYearText').innerText = pickerTempYear;
+      renderMonthPickerGrid();
+    }
+
+    function selectPickerMonth(monthIdx) {
+      pickerTempMonth = monthIdx;
+      renderMonthPickerGrid();
+    }
+
+    function renderMonthPickerGrid() {
+      const grid = document.getElementById('monthGrid');
+      let html = '';
+      MONTH_SHORT.forEach((m, idx) => {
+        const isSelected = idx === pickerTempMonth;
+        html += `
+          <button type="button" onclick="selectPickerMonth(${idx})" class="py-3 rounded-2xl text-xs font-semibold transition-all ${isSelected ? 'bg-emerald-600 text-white shadow-md' : 'bg-[#212d24] text-gray-300 hover:bg-[#28382d]'}">
+            ${m}
+          </button>
+        `;
+      });
+      grid.innerHTML = html;
+    }
+
+    function applyMonthPicker() {
+      currentSelectedMonth = pickerTempMonth;
+      currentSelectedYear = pickerTempYear;
+      updateHeaderMonthDisplay();
+      updateCalculatedBalances();
+      renderTransactions();
+      closeMonthPickerModal();
+    }
+
+    function changeMonth(delta) {
+      currentSelectedMonth += delta;
+      if (currentSelectedMonth > 11) {
+        currentSelectedMonth = 0;
+        currentSelectedYear++;
+      } else if (currentSelectedMonth < 0) {
+        currentSelectedMonth = 11;
+        currentSelectedYear--;
+      }
+      updateHeaderMonthDisplay();
+      updateCalculatedBalances();
+      renderTransactions();
+    }
 
     function switchTab(tab) {
       const viewBeranda = document.getElementById('viewBeranda');
@@ -507,6 +629,7 @@
       }
     }
 
+    // CALCULATE BALANCES FILTERED BY MONTH & YEAR
     function updateCalculatedBalances() {
       let totalIn = 0;
       let totalOut = 0;
@@ -517,12 +640,24 @@
       });
 
       transactions.forEach(tx => {
+        const txDate = new Date(tx.date);
+        const txMonth = txDate.getMonth();
+        const txYear = txDate.getFullYear();
+
+        // Accumulate overall wallet balance regardless of month for actual wallet holding
         if (tx.type === 'in') {
-          totalIn += Number(tx.amount);
           if (walletBalances[tx.walletId] !== undefined) walletBalances[tx.walletId] += Number(tx.amount);
         } else {
-          totalOut += Number(tx.amount);
           if (walletBalances[tx.walletId] !== undefined) walletBalances[tx.walletId] -= Number(tx.amount);
+        }
+
+        // Cash flow totals for SELECTED MONTH ONLY
+        if (txMonth === currentSelectedMonth && txYear === currentSelectedYear) {
+          if (tx.type === 'in') {
+            totalIn += Number(tx.amount);
+          } else {
+            totalOut += Number(tx.amount);
+          }
         }
       });
 
@@ -586,22 +721,25 @@
       lucide.createIcons();
     }
 
+    // RENDER TRANSACTIONS FILTERED BY SELECTED MONTH & YEAR
     function renderTransactions() {
       const container = document.getElementById('transactionListContainer');
       const searchKeyword = document.getElementById('searchInput').value.toLowerCase();
 
       let filtered = transactions.filter(tx => {
+        const txDate = new Date(tx.date);
+        const matchMonth = txDate.getMonth() === currentSelectedMonth && txDate.getFullYear() === currentSelectedYear;
         const matchType = activeFilterType === 'all' || tx.type === activeFilterType;
         const matchWallet = selectedWalletFilter === 'all' || tx.walletId === selectedWalletFilter;
         const matchSearch = tx.title.toLowerCase().includes(searchKeyword) || tx.category.toLowerCase().includes(searchKeyword);
-        return matchType && matchWallet && matchSearch;
+        return matchMonth && matchType && matchWallet && matchSearch;
       });
 
       if (filtered.length === 0) {
         container.innerHTML = `
           <div class="text-center py-12 text-gray-500">
             <i data-lucide="inbox" class="w-10 h-10 mx-auto mb-2 opacity-50"></i>
-            <p class="text-xs">Belum ada data transaksi</p>
+            <p class="text-xs">Tidak ada transaksi di ${MONTH_NAMES[currentSelectedMonth]} ${currentSelectedYear}</p>
           </div>
         `;
         lucide.createIcons();
@@ -622,7 +760,7 @@
               <div>
                 <p class="text-xs font-bold text-gray-100">${escapeHtml(tx.title)}</p>
                 <p class="text-[10px] text-gray-400 flex items-center gap-1.5 mt-0.5">
-                  <span>${tx.category}</span> • <span>${formatDate(tx.date)}</span>
+                  <span>${tx.category}</span> • <span>${formatFullDateWithMonth(tx.date)}</span>
                 </p>
                 <p class="text-[10px] text-emerald-500/80 font-medium flex items-center gap-1 mt-0.5">
                   <i data-lucide="wallet" class="w-3 h-3"></i> ${walletObj.name}
@@ -655,6 +793,7 @@
       document.getElementById('inputTitle').value = '';
       document.getElementById('transactionModal').classList.remove('hidden');
       setTxType('out');
+      updateFormattedDateDisplay();
     }
 
     function openEditModal(txId) {
@@ -670,6 +809,7 @@
 
       setTxType(tx.type);
       selectedCategory = tx.category;
+      updateFormattedDateDisplay();
 
       document.getElementById('transactionModal').classList.remove('hidden');
     }
@@ -1190,19 +1330,26 @@
       return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(number);
     }
 
-    function formatDate(dateStr) {
+    // FORMAT TANGGAL DENGAN NAMA BULAN DILENGKAPI NAMA HARI (FOTO 2)
+    function formatFullDateWithMonth(dateStr) {
       if (!dateStr) return '';
       const date = new Date(dateStr);
-      return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+      return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'Long' ? 'long' : 'short', year: 'numeric' });
+    }
+
+    function updateFormattedDateDisplay() {
+      const dateInputVal = document.getElementById('inputDate').value;
+      const displayElem = document.getElementById('formattedDateText');
+      if (dateInputVal) {
+        const d = new Date(dateInputVal);
+        displayElem.innerText = `Tanggal dipilih: ${d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}`;
+      } else {
+        displayElem.innerText = '';
+      }
     }
 
     function escapeHtml(text) {
       return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    }
-
-    function changeMonth(delta) {
-      const monthText = document.getElementById('currentMonthText');
-      monthText.innerText = delta > 0 ? 'November 2026' : 'September 2026';
     }
   </script>
 </body>
