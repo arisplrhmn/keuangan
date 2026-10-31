@@ -173,7 +173,7 @@
     </button>
   </nav>
 
-  <!-- MODAL: PICKER BULAN & TAHUN (SAMA SEPERTI FOTO 1) -->
+  <!-- MODAL: PICKER BULAN & TAHUN -->
   <div id="monthPickerModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-[#18221c] w-full max-w-xs rounded-3xl p-5 border border-emerald-900/40 shadow-2xl">
       <!-- Header Tahun -->
@@ -253,7 +253,7 @@
         <select id="inputWallet" class="w-full bg-[#1d2b24] border border-emerald-900/40 rounded-xl p-3 text-xs text-white focus:outline-none"></select>
       </div>
 
-      <!-- TANGGAL TRANSAKSI BERSAMA DISPLAY KETERANGAN DESKRIPTIF -->
+      <!-- TANGGAL TRANSAKSI -->
       <div class="mb-4">
         <label class="text-xs text-gray-400 mb-1 block font-medium">Tanggal Transaksi</label>
         <div class="bg-[#1d2b24] border border-emerald-900/40 rounded-xl p-3 flex items-center gap-3">
@@ -549,7 +549,7 @@
       document.getElementById('currentMonthText').innerText = `${MONTH_NAMES[currentSelectedMonth]} ${currentSelectedYear}`;
     }
 
-    // MONTH PICKER MODAL LOGIC (SEPERTI DALAM FOTO 1)
+    // MONTH PICKER MODAL LOGIC
     function openMonthPickerModal() {
       pickerTempMonth = currentSelectedMonth;
       pickerTempYear = currentSelectedYear;
@@ -629,7 +629,7 @@
       }
     }
 
-    // CALCULATE BALANCES FILTERED BY MONTH & YEAR
+    // UPDATE CALCULATED BALANCES (TRANSACTIONS ONLY SHOW CASH FLOW / HISTORY, WALLETS USE THEIR INITIAL/FIXED BALANCES)
     function updateCalculatedBalances() {
       let totalIn = 0;
       let totalOut = 0;
@@ -644,14 +644,7 @@
         const txMonth = txDate.getMonth();
         const txYear = txDate.getFullYear();
 
-        // Accumulate overall wallet balance regardless of month for actual wallet holding
-        if (tx.type === 'in') {
-          if (walletBalances[tx.walletId] !== undefined) walletBalances[tx.walletId] += Number(tx.amount);
-        } else {
-          if (walletBalances[tx.walletId] !== undefined) walletBalances[tx.walletId] -= Number(tx.amount);
-        }
-
-        // Cash flow totals for SELECTED MONTH ONLY
+        // Cash flow totals for SELECTED MONTH ONLY (does not modify wallet balances)
         if (txMonth === currentSelectedMonth && txYear === currentSelectedYear) {
           if (tx.type === 'in') {
             totalIn += Number(tx.amount);
@@ -1330,11 +1323,10 @@
       return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(number);
     }
 
-    // FORMAT TANGGAL DENGAN NAMA BULAN DILENGKAPI NAMA HARI (FOTO 2)
     function formatFullDateWithMonth(dateStr) {
       if (!dateStr) return '';
       const date = new Date(dateStr);
-      return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'Long' ? 'long' : 'short', year: 'numeric' });
+      return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
     }
 
     function updateFormattedDateDisplay() {
